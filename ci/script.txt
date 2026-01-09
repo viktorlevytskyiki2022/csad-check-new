@@ -1,0 +1,182 @@
+const CONFIG = {
+  githubToken: '', // <--- ВСТАВ ТОКЕН
+  repoOwner: 'viktorlevytskyiki2022', 
+  repoName: 'csad-check-new',   // <--- НАЗВУ РЕПО СЮДА          
+  inputPath: 'input/groups.csv',
+  outputPath: 'output/groups.csv',
+  sheetName: 'Список',
+  branch: 'main'
+
+};
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+      .createMenu('CSAD Tools')
+      .addItem('1. Експортувати (На GitHub)', 'exportSheetToGitHub')
+      .addSeparator()
+      .addItem('2. Імпортувати (В Таблицю)', 'importStatusFromGitHub')
+      .addToUi();
+}
+
+// --- УНІВЕРСАЛЬНИЙ ПОШУК КОЛОНКИ ---
+function findGroupColumnIndex(headers) {
+  for (let i = 0; i < headers.length; i++) {
+    let h = String(headers[i]).trim();
+    
+    // 1. Якщо це 3 цифри (наприклад 402, 403)
+    if (/^\d{3}$/.test(h)) return i;
+    
+    // 2. Або якщо містить слово "repo" (case insensitive)
+    if (h.toLowerCase().includes('repo')) return i;
+  }
+  return -1;
+}
+
+// --- 1. ЕКСПОРТ ---
+function exportSheetToGitHub() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.sheetName);
+  if (!sheet) { SpreadsheetApp.getUi().alert(`Вкладку "${CONFIG.sheetName}" не знайдено.`); return; }
+
+  // Беремо всі дані як є
+  const data = sheet.getDataRange().getValues();
+  
+  // Конвертуємо в CSV
+  const csvContent = data.map(row => 
+    row.map(cell => {
+      let s = String(cell);
+      if (s.includes(",") || s.includes("\n") || s.includes('"')) {
+        return '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    }).join(",")
+  ).join("\n");
+
+  const contentEncoded = Utilities.base64Encode(csvContent, Utilities.Charset.UTF_8);
+  
+  try {
+    const fileSha = getFileSha(CONFIG.inputPath);
+    const url = `https://api.github.com/repos/${CONFIG.repoOwner}/${CONFIG.repoName}/contents/${CONFIG.inputPath}`;
+    const payload = {
+      message: `Update via Apps Script`,
+      content: contentEncoded,
+      branch: CONFIG.branch
+    };
+    if (fileSha) payload.sha = fileSha;
+
+    const options = {
+      method: 'put',
+      headers: { 'Authorization': 'token ' + CONFIG.githubToken, 'Accept': 'application/vnd.github.v3+json' },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    };
+
+    const response = UrlFetchApp.fetch(url, options);
+    if (response.getResponseCode() >= 200 && response.getResponseCode() < 300) {
+      SpreadsheetApp.getUi().alert('✅ Відправлено на GitHub!');
+    } else {
+      SpreadsheetApp.getUi().alert('❌ Помилка: ' + response.getContentText());
+    }
+  } catch (e) {
+    SpreadsheetApp.getUi().alert('❌ Error: ' + e.toString());
+  }
+}
+
+// --- 2. ІМПОРТ (ТЕПЕР УНІВЕРСАЛЬНИЙ) ---
+function importStatusFromGitHub() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.sheetName);
+  const ui = SpreadsheetApp.getUi();
+
+  const url = `https://api.github.com/repos/${CONFIG.repoOwner}/${CONFIG.repoName}/contents/${CONFIG.outputPath}?ref=${CONFIG.branch}`;
+  const options = {
+    method: 'get',
+    headers: { 'Authorization': 'token ' + CONFIG.githubToken, 'Accept': 'application/vnd.github.v3+json' },
+    muteHttpExceptions: true
+  };
+  
+  try {
+    const response = UrlFetchApp.fetch(url, options);
+    if (response.getResponseCode() !== 200) {
+      ui.alert(`⏳ Файл ще не готовий. Зачекайте хвилинку після експорту.`);
+      return;
+    }
+
+    const json = JSON.parse(response.getContentText());
+    const decodedContent = Utilities.newBlob(Utilities.base64Decode(json.content)).getDataAsString();
+    const csvData = Utilities.parseCsv(decodedContent);
+    const csvHeaders = csvData[0];
+
+    // --- МАГІЯ: Шукаємо колонку в CSV файлі ---
+    const repoIndexCSV = findGroupColumnIndex(csvHeaders);
+    const statusIndexCSV = csvHeaders.findIndex(h => String(h).trim() == 'Status');
+
+    if (repoIndexCSV === -1) {
+      ui.alert(`❌ У файлі з GitHub не знайдено колонку з номером групи (3 цифри).`);
+      return;
+    }
+
+    let statusMap = {};
+    for (let i = 1; i < csvData.length; i++) {
+      let r = csvData[i][repoIndexCSV];
+      let s = csvData[i][statusIndexCSV];
+      if (r) statusMap[String(r).trim()] = s;
+    }
+
+    // --- МАГІЯ: Шукаємо колонку в ТАБЛИЦІ ---
+    const sheetData = sheet.getDataRange().getValues();
+    const sheetHeaders = sheetData[0];
+    
+    const repoIndexSheet = findGroupColumnIndex(sheetHeaders);
+    
+    if (repoIndexSheet === -1) {
+      ui.alert(`❌ Не можу знайти колонку з номером групи (наприклад 402) у твоїй таблиці.`);
+      return;
+    }
+    
+    // Показуємо користувачу, яку колонку ми знайшли (для контролю)
+    const foundColName = sheetHeaders[repoIndexSheet]; 
+    
+    // Шукаємо або створюємо Status
+    let statusIndexSheet = sheetHeaders.findIndex(h => String(h).trim() == 'Status');
+    if (statusIndexSheet === -1) {
+      statusIndexSheet = sheetHeaders.length;
+      sheet.getRange(1, statusIndexSheet + 1).setValue('Status');
+    }
+
+    let updates = 0;
+    for (let i = 1; i < sheetData.length; i++) {
+      let repoName = String(sheetData[i][repoIndexSheet]).trim();
+      if (repoName && statusMap.hasOwnProperty(repoName)) {
+        sheet.getRange(i + 1, statusIndexSheet + 1).setValue(statusMap[repoName]);
+        updates++;
+      }
+    }
+
+    ui.alert(`🎉 Успіх! \nЗнайдено колонку групи: "${foundColName}"\nОновлено студентів: ${updates}`);
+
+  } catch (e) {
+    ui.alert('❌ Помилка: ' + e.toString());
+  }
+}
+
+function getFileSha(path) {
+  try {
+    const url = `https://api.github.com/repos/${CONFIG.repoOwner}/${CONFIG.repoName}/contents/${path}?ref=${CONFIG.branch}`;
+    const options = {
+      method: 'get',
+      headers: { 'Authorization': 'token ' + CONFIG.githubToken, 'Accept': 'application/vnd.github.v3+json' },
+      muteHttpExceptions: true
+    };
+    const response = UrlFetchApp.fetch(url, options);
+    if (response.getResponseCode() === 200) {
+      return JSON.parse(response.getContentText()).sha;
+    }
+  } catch (e) {}
+  return null;
+}
+function FORCE_AUTH() {
+  // Ця функція нічого корисного не робить, 
+  // вона просто стукає в Гугл, щоб вибити вікно дозволів. для подолання можливого ерору.
+  UrlFetchApp.fetch("https://www.google.com");
+}
