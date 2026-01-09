@@ -1,18 +1,26 @@
 import csv
 import requests
 import os
-
+import re  # Додали бібліотеку для пошуку цифр у назві файлу
 # --- НАЛАШТУВАННЯ ---
 INPUT_DIR = 'input'
 OUTPUT_DIR = 'output'
 
 def find_column_by_keyword(fieldnames, keywords):
+    """Шукає колонку за ключовими словами (git, repo і т.д.)"""
     if not fieldnames: return None
     for col in fieldnames:
         clean_col = str(col).lower().strip()
         for kw in keywords:
             if kw.lower() in clean_col:
                 return col
+    return None
+
+def extract_group_from_filename(filename):
+    """Витягує перше знайдене число з назви файлу (groups_401.csv -> 401)"""
+    match = re.search(r'\d+', filename)
+    if match:
+        return match.group()
     return None
 
 def check_repo_exists(username, repo_name):
@@ -28,7 +36,7 @@ def check_repo_exists(username, repo_name):
 def main():
     if not os.path.exists(OUTPUT_DIR): os.makedirs(OUTPUT_DIR)
     if not os.path.exists(INPUT_DIR): 
-        print("Folder 'input' not found yet. Waiting for Google Sheets...")
+        print("Folder 'input' not found yet.")
         return
 
     csv_files = [f for f in os.listdir(INPUT_DIR) if f.endswith('.csv')]
@@ -43,20 +51,30 @@ def main():
             reader = csv.DictReader(clean_lines)
             fieldnames = reader.fieldnames
             
-            # Шукаємо колонки (Git User та Repo/Group)
+            # 1. Шукаємо колонку Git Name (як і раніше)
             git_col = find_column_by_keyword(fieldnames, ['git name', 'git', 'github'])
-            # Шукаємо колонку з 3 цифр (група) або слово repo
-            repo_col = None
-            for col in fieldnames:
-                if str(col).strip().isdigit() and len(str(col).strip()) == 3:
-                    repo_col = col; break
-            if not repo_col: repo_col = find_column_by_keyword(fieldnames, ['repo', 'repository'])
-
-            print(f"   🎯 Git Column: {git_col} | Repo Column: {repo_col}")
             
-            if not repo_col: continue
+            # 2. НОВА ЛОГІКА: Шукаємо колонку Групи на основі назви файлу
+            group_number = extract_group_from_filename(filename)
+            repo_col = None
+            
+            if group_number and group_number in fieldnames:
+                # Ідеальний варіант: знайшли "401" у назві файлу і така колонка є
+                repo_col = group_number
+                print(f"   ✅ Знайшов групу {group_number} з назви файлу!")
+            else:
+                # Запасний варіант: якщо файл названий криво, шукаємо слово 'repo'
+                print(f"   ⚠️ Не знайшов колонку '{group_number}'. Шукаю за ключовими словами...")
+                repo_col = find_column_by_keyword(fieldnames, ['repo', 'repository'])
 
-            fieldnames = fieldnames + ['Status']
+            print(f"   🎯 Target Columns -> Git: '{git_col}' | Repo: '{repo_col}'")
+            
+            if not repo_col: 
+                print("   ❌ Колонка з репозиторієм не знайдена. Пропускаю файл.")
+                continue
+
+            # Додаємо статус
+            new_fieldnames = fieldnames + ['Status']
             rows_to_write = []
             
             for row in reader:
@@ -72,7 +90,7 @@ def main():
                 rows_to_write.append(row)
 
         with open(output_path, mode='w', encoding='utf-8', newline='') as outfile:
-            writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+            writer = csv.DictWriter(outfile, fieldnames=new_fieldnames)
             writer.writeheader()
             writer.writerows(rows_to_write)
 
