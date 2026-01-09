@@ -1,24 +1,24 @@
 Варіант,Прізвище,Ім'я,По-батькові,телефон,НУЛП емейл,емейл,git name,401,коментар,Status
-1,Антоник,Назарій,Олегович ,932336678,nazarii.antonyk.ki.2022@lpnu.ua,nazarantonuk1@gmail.com,nazariiantonykki2022,401csad1,Староста,
-2,Блецко,Михайло,,,mykhailo.bletsko.ki.2022@lpnu.ua,,mykhailobletskoki2022,401csad2,1,
-3,Бовтач,Остап,Михайлович ,,ostap.bovtach.ki.2022@lpnu.ua,,ostapbovtachki2022,401csad3,122,
-4,Брик,Роман,,,roman.bryk.ki.2023@lpnu.ua,,romanbrykki2023,401csad4,,
-5,Бугій,Віталій,,,vitalii.buhii.ki.2022@lpnu.ua,,vitaliibuhiiki2022,401csad5,,
-6,Винницький,Назар,,,nazar.vynnytskyi.ki.2022@lpnu.ua,,nazarvynnytskyiki2022,401csad6,,
-7,Горлаков,Андрій,,,andrii.horlakov.ki.2022@lpnu.ua,,andriihorlakovki2022,401csad7,,
-8,Грибок,Маркіян,Андрійович,967591411,markiian.hrybok.ki.2022@lpnu.ua,grybokmarkian@gmail.com,markiianhrybokki2022,401csad8,,
-9,Демченко,Вікторія,,,viktoriia.demchenko.ki.2022@lpnu.ua,,viktoriiademchenkoki2022,401csad9,,
-10,Диня,Максим,,,maksym.dynia.ki.2022@lpnu.ua,,maksymdyniaki2022,401csad10,,
-11,Долюк,Софія,Петрівна,,sofiia.doliuk.ki.2022@lpnu.ua,,sofiiadoliukki2022,401csad11,,
-12,Запорожцев,Олександр,Євгенович,,oleksandr.zaporozhtsev.ki.2022@lpnu.ua,,oleksandrzaporozhtsevki2022,401csad12,,
-13,Ігнат ,Денис,Віталійович,969212092,denys.ihnat.ki.2022@lpnu.ua,igantdenus@gmail.com,denysihnatki2022,401csad13,студент,
-14,Куценко,Олександр,Андрійович,,oleksandr.kutsenko.ki.2021@lpnu.ua,,oleksandrkutsenkoki2021,401csad14,,
-15,Лівановський,Василь,,,vasyl.livanovskyi.ki.2022@lpnu.ua,,vasyllivanovskyiki2022,401csad15,,
-16,Медведюк,Роман,Андрійович,,roman.medvediuk.ki.2022@lpnu.ua,,romanmedvediukki2022,401csad16,,
-17,Пісоцький,Андрій,Володимирович,689653750,andrii.pisotskyi.ki.2022@lpnu.ua,pico4kui28@gmail.com,andriipisotskyiki2022,401csad17,,
-18,Проць,Сергій,Михайлович,686301293,serhii.prots.ki.2022@lpnu.ua,sergi2pro@gmail.com,serhiiprotski2022,401csad18,,
-19,Пянило ,Павло,Вадимович,,pavlo.pianylo.ki.2022@lpnu.ua,,pavlopianyloki2022,401csad19,,
-20,Семків,Іван,Михайлович,,ivan.semkiv.ki.2022@lpnu.ua,,nazariiantonykki2022,401csad20,,
-21,Солтисяк,Олег,,,oleh.soltysiak.ki.2021@lpnu.ua,,mykhailobletskoki2022,401csad21,,
-22,Сподаренко,Дмитро,Сергійович,,dmytro.spodarenko.ki.2022@lpnu.ua,dimaspodarenko@gmail.com,ostapbovtachki2022,401csad22,,
-23,Ставовий ,Віталій,,,vitalii.stavovyi.ki.2022@lpnu.ua,,romanbrykki2023,401csad23,,
+1,Антоник,Назарій,Олегович ,932336678,nazarii.antonyk.ki.2022@lpnu.ua,nazarantonuk1@gmail.com,nazariiantonykki2022,401csad1,Староста,FAIL
+2,Блецко,Михайло,,,mykhailo.bletsko.ki.2022@lpnu.ua,,mykhailobletskoki2022,401csad2,1,FAIL
+3,Бовтач,Остап,Михайлович ,,ostap.bovtach.ki.2022@lpnu.ua,,ostapbovtachki2022,401csad3,122,FAIL
+4,Брик,Роман,,,roman.bryk.ki.2023@lpnu.ua,,romanbrykki2023,401csad4,,FAIL
+5,Бугій,Віталій,,,vitalii.buhii.ki.2022@lpnu.ua,,vitaliibuhiiki2022,401csad5,,FAIL
+6,Винницький,Назар,,,nazar.vynnytskyi.ki.2022@lpnu.ua,,nazarvynnytskyiki2022,401csad6,,FAIL
+7,Горлаков,Андрій,,,andrii.horlakov.ki.2022@lpnu.ua,,andriihorlakovki2022,401csad7,,FAIL
+8,Грибок,Маркіян,Андрійович,967591411,markiian.hrybok.ki.2022@lpnu.ua,grybokmarkian@gmail.com,markiianhrybokki2022,401csad8,,FAIL
+9,Демченко,Вікторія,,,viktoriia.demchenko.ki.2022@lpnu.ua,,viktoriiademchenkoki2022,401csad9,,FAIL
+10,Диня,Максим,,,maksym.dynia.ki.2022@lpnu.ua,,maksymdyniaki2022,401csad10,,FAIL
+11,Долюк,Софія,Петрівна,,sofiia.doliuk.ki.2022@lpnu.ua,,sofiiadoliukki2022,401csad11,,FAIL
+12,Левицький,Віктор,,,viktor.levytskyi.ki.2022@lpnu.ua,,viktorlevytskyiki2022,402сsad12,,FAIL
+13,Ігнат ,Денис,Віталійович,969212092,denys.ihnat.ki.2022@lpnu.ua,igantdenus@gmail.com,denysihnatki2022,401csad13,студент,FAIL
+14,Куценко,Олександр,Андрійович,,oleksandr.kutsenko.ki.2021@lpnu.ua,,oleksandrkutsenkoki2021,401csad14,,FAIL
+15,Лівановський,Василь,,,vasyl.livanovskyi.ki.2022@lpnu.ua,,vasyllivanovskyiki2022,401csad15,,FAIL
+16,Медведюк,Роман,Андрійович,,roman.medvediuk.ki.2022@lpnu.ua,,romanmedvediukki2022,401csad16,,FAIL
+17,Пісоцький,Андрій,Володимирович,689653750,andrii.pisotskyi.ki.2022@lpnu.ua,pico4kui28@gmail.com,andriipisotskyiki2022,401csad17,,FAIL
+18,Проць,Сергій,Михайлович,686301293,serhii.prots.ki.2022@lpnu.ua,sergi2pro@gmail.com,serhiiprotski2022,401csad18,,FAIL
+19,Пянило ,Павло,Вадимович,,pavlo.pianylo.ki.2022@lpnu.ua,,pavlopianyloki2022,401csad19,,FAIL
+20,Семків,Іван,Михайлович,,ivan.semkiv.ki.2022@lpnu.ua,,nazariiantonykki2022,401csad20,,FAIL
+21,Солтисяк,Олег,,,oleh.soltysiak.ki.2021@lpnu.ua,,mykhailobletskoki2022,401csad21,,FAIL
+22,Сподаренко,Дмитро,Сергійович,,dmytro.spodarenko.ki.2022@lpnu.ua,dimaspodarenko@gmail.com,ostapbovtachki2022,401csad22,,FAIL
+23,Ставовий ,Віталій,,,vitalii.stavovyi.ki.2022@lpnu.ua,,romanbrykki2023,401csad23,,FAIL
